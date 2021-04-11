@@ -1,39 +1,26 @@
-const HDWalletProvider = require("truffle-hdwallet-provider");
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 const Web3 = require("web3");
-const { interface, bytecode } = require("./compile");
+const { MNEMONIC, RINKEBY_URL } = require("./secrets");
+const { abi, bytecode } = require("./compile");
 
-const provider = new HDWalletProvider(
-  "HELLO HOW ARE YOU THIS IS MY SECRET 12 WORLD MNEMONIC",
-  "https://rinkeby.infura.io/v3/https://rinkeby.infura.io/v3/78775d265b48481fa6704751ae27b39b"
-);
+const provider = new HDWalletProvider({
+  mnemonic: {
+    phrase: MNEMONIC,
+  },
+  providerOrUrl: RINKEBY_URL,
+});
 
 const web3 = new Web3(provider);
+const deploy = async () => {
+  const accounts = await web3.eth.getAccounts();
+  console.log("Attempting to deploy from account", accounts[0]);
+  const result = await new web3.eth.Contract(abi)
+    .deploy({
+      data: bytecode,
+      arguments: ["hello world"],
+    })
+    .send({ from: accounts[0], gas: "1000000" });
 
-async function deploy() {
-  try {
-    console.log("Hi didly");
-    const myAccount = "0x3782069BA4Ea8D399860266F7ad7AD8Fb9DCbdcC";
-    const inbox = await new web3.eth.Contract(JSON.parse(interface))
-      .deploy({
-        data: bytecode,
-        arguments: ["Hello world"],
-      })
-      .send({
-        from: myAccount,
-        gas: "1000000",
-      });
-
-    console.log(inbox);
-    console.log(inbox._address);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-deploy()
-  .then((x) => {
-    x += 1;
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+  console.log("Contract deployed to", result.options.address);
+};
+deploy();
