@@ -1,6 +1,6 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const Web3 = require("web3");
-const { MNEMONIC, RINKEBY_URL } = require("./secrets");
+const { MNEMONIC, RINKEBY_URL } = require("../secrets");
 const { abi, bytecode } = require("./compile");
 
 const provider = new HDWalletProvider({
