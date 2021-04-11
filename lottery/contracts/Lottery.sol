@@ -20,6 +20,7 @@ contract Lottery {
     }
 
     function pickWinner() public restricted {
+        require(players.length > 0);
         uint idx = random(players.length - 1);
         players[idx].transfer(address(this).balance);
         delete players; // reset players
