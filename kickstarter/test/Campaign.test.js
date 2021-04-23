@@ -175,6 +175,7 @@ describe("Campaign", () => {
     const requests = await campaign.methods.requests(0).call();
     assert.strictEqual(requests.approvalCount, "1");
   });
+  // ADD tests for:
   // the request hasn't beeen completed
   //  request has approves
   //  transferring to correct recipient.
